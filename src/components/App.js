@@ -6,6 +6,7 @@ import FuelSavingsPage from "./containers/FuelSavingsPage";
 import AboutPage from "./AboutPage";
 import NotFoundPage from "./NotFoundPage";
 import LoginPage from "./containers/LoginPage";
+import RegistrationPage from "./containers/RegistrationPage";
 
 // This is a class-based component because the current
 // version of hot reloading won't hot reload a stateless
@@ -30,6 +31,7 @@ class App extends React.Component {
         </div> */}
         <Switch>
           <Route path="/login" component={LoginPage} />
+          <Route path="/register" component={RegistrationPage} />
           <Route path="/fuel-savings" component={FuelSavingsPage} />
           <Route path="/about" component={AboutPage} />
           <Route component={NotFoundPage} />
