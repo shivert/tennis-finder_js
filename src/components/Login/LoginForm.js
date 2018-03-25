@@ -1,5 +1,5 @@
 import React from "react";
-import { Form, Icon, Input, Button, Checkbox } from "antd";
+import { Form, Icon, Input, Button, Checkbox, Row, Col } from "antd";
 const FormItem = Form.Item;
 
 class Login extends React.Component {
@@ -46,16 +46,20 @@ class Login extends React.Component {
           </a>
         </FormItem>
         <FormItem>
-          <Button
-            type="primary"
-            htmlType="submit"
-            className="login-form-button"
-          >
-            Log in
-          </Button>
-          <a href="" style={{ marginLeft: "5px" }}>
-            register now!
-          </a>
+          <Row>
+            <Col span={24}>
+              <Button
+                type="primary"
+                htmlType="submit"
+                className="login-form-button"
+              >
+                Log in
+              </Button>
+              <a href="" style={{ marginLeft: "5px" }}>
+                register now!
+              </a>
+            </Col>
+          </Row>
         </FormItem>
       </Form>
     );
