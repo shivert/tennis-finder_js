@@ -1,14 +1,15 @@
 import React from "react";
 import { Layout, Menu } from "antd";
-const { Header } = Layout;
+const { Header, Content } = Layout;
 import { Switch, NavLink, Route } from "react-router-dom";
+import Dashboard from "../Dashboard/Dashboard";
 
 export default class TopLevelContainer extends React.Component {
   appStructure = [
     {
       route: "/dashboard",
       title: "Dashboard",
-      component: stub
+      component: Dashboard
     },
     {
       route: "/courtfinder",
@@ -78,9 +79,10 @@ export default class TopLevelContainer extends React.Component {
   };
 
   render() {
+    console.log(this.routeList);
     return (
       <div>
-        <Layout key="menu">
+        <Layout>
           <Header className="header">
             <div className="logo" />
             <Menu
@@ -95,16 +97,19 @@ export default class TopLevelContainer extends React.Component {
             </Menu>
           </Header>
         </Layout>
-        <div key="pageContent">
+        <Content style={{ height: "100vh" }}>
           <Switch>
-            {this.routelist}
-            <Route component={stub} />
+            {this.routeList}
+            <Route component={badstub} />
           </Switch>
-        </div>
+        </Content>
       </div>
     );
   }
 }
 const stub = () => {
-  return <div>stub</div>;
+  return <div>new</div>;
+};
+const badstub = () => {
+  return <div>bad</div>;
 };
