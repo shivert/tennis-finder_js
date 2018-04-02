@@ -5,6 +5,7 @@ import { Switch, NavLink, Route } from "react-router-dom";
 import Dashboard from "../Dashboard/Dashboard";
 import PlayerFinder from "../PlayerFinder/PlayerFinder";
 import MatchScheduler from "../MatchScheduler/MatchScheduler";
+import MatchHistory from "../MatchHistory/MatchHistory";
 
 export default class TopLevelContainer extends React.Component {
   appStructure = [
@@ -36,7 +37,7 @@ export default class TopLevelContainer extends React.Component {
     {
       route: "/matchhistory",
       title: "Match History",
-      component: stub
+      component: MatchHistory
     },
     {
       route: "/profile",
