@@ -3,6 +3,7 @@ import { Layout, Menu } from "antd";
 const { Header, Content } = Layout;
 import { Switch, NavLink, Route } from "react-router-dom";
 import Dashboard from "../Dashboard/Dashboard";
+import PlayerFinder from "../PlayerFinder/PlayerFinder";
 
 export default class TopLevelContainer extends React.Component {
   appStructure = [
@@ -29,7 +30,7 @@ export default class TopLevelContainer extends React.Component {
     {
       route: "/playerfinder",
       title: "Player Finder",
-      component: stub
+      component: PlayerFinder
     },
     {
       route: "/matchhistory",
