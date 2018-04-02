@@ -4,6 +4,7 @@ const { Header, Content } = Layout;
 import { Switch, NavLink, Route } from "react-router-dom";
 import Dashboard from "../Dashboard/Dashboard";
 import PlayerFinder from "../PlayerFinder/PlayerFinder";
+import MatchScheduler from "../MatchScheduler/MatchScheduler";
 
 export default class TopLevelContainer extends React.Component {
   appStructure = [
@@ -20,7 +21,7 @@ export default class TopLevelContainer extends React.Component {
     {
       route: "/matchscheduler",
       title: "Match Scheduler",
-      component: stub
+      component: MatchScheduler
     },
     {
       route: "/messages",
