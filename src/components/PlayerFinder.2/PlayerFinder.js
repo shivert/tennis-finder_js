@@ -93,30 +93,36 @@ export default class PlayerFinder extends React.Component {
   render() {
     return (
       <PageLayout pageTitle="Player Finder">
-        <Card>
-          <Row style={{ marginBottom: "20px" }} gutter={16}>
-            <Col span={4}>
-              <SearchBar placeholder="Search by name" />
-            </Col>
-            <Col span={3}>
-              <Button onClick={this.clearFilters}>Clear filters</Button>
-            </Col>
-            <Col span={4}>
-              <Button onClick={this.clearAll}>Clear filters and sorters</Button>
-            </Col>
-          </Row>
-          <Row>
-            <Col span={24}>
-              <Table
-                columns={columns}
-                dataSource={dataSource}
-                expandedRowRender={record => (
-                  <p style={{ margin: 0 }}>{"this is expanded"}</p>
-                )}
-              />
-            </Col>
-          </Row>
-        </Card>
+        <Row>
+          <Col span={24}>
+            <Card>
+              <Row style={{ marginBottom: "20px" }} gutter={16}>
+                <Col span={4}>
+                  <SearchBar placeholder="Search by name" />
+                </Col>
+                <Col span={3}>
+                  <Button onClick={this.clearFilters}>Clear filters</Button>
+                </Col>
+                <Col span={4}>
+                  <Button onClick={this.clearAll}>
+                    Clear filters and sorters
+                  </Button>
+                </Col>
+              </Row>
+              <Row>
+                <Col span={24}>
+                  <Table
+                    columns={columns}
+                    dataSource={dataSource}
+                    expandedRowRender={record => (
+                      <p style={{ margin: 0 }}>{"this is expanded"}</p>
+                    )}
+                  />
+                </Col>
+              </Row>
+            </Card>
+          </Col>
+        </Row>
       </PageLayout>
     );
   }
