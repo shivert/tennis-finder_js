@@ -1,6 +1,6 @@
 export function ajaxGet(url, callback, errorCallback) {
   const header = new Headers();
-  header.append("Authorization", "Bearer " + document.cookie);
+  header.append("Authorization", document.cookie);
   const message = {
     method: "GET",
     headers: header
@@ -12,7 +12,7 @@ export function ajaxGet(url, callback, errorCallback) {
       return resp
         .json()
         .then(object => {
-          return { ...object, status: resp.status };
+          return { ...object, status: resp.status, ok: resp.ok };
         })
         .catch(err => {
           throw err;
@@ -25,7 +25,7 @@ export function ajaxGet(url, callback, errorCallback) {
 export function ajaxPost(url, body, callback, errorCallback) {
   const header = new Headers();
   header.append("Content-Type", "application/json");
-  header.append("Authorization", "Bearer " + document.cookie);
+  header.append("Authorization", document.cookie);
   const message = {
     method: "POST",
     headers: header,
@@ -35,10 +35,11 @@ export function ajaxPost(url, body, callback, errorCallback) {
   const ajaxRequest = new Request(url, message);
   fetch(ajaxRequest)
     .then(resp => {
+      const status = resp.status;
       return resp
         .json()
         .then(object => {
-          return { ...object, status: resp.status };
+          return { ...object, status: status, ok: resp.ok };
         })
         .catch(err => {
           throw err;
