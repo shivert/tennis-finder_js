@@ -6,6 +6,7 @@ import Dashboard from "../Dashboard/Dashboard";
 import PlayerFinder from "../PlayerFinder/PlayerFinder";
 import MatchScheduler from "../MatchScheduler/MatchScheduler";
 import MatchHistory from "../MatchHistory/MatchHistory";
+import CourtFinder from "../CourtFinder/CourtFinder";
 
 export default class TopLevelContainer extends React.Component {
   appStructure = [
@@ -17,7 +18,7 @@ export default class TopLevelContainer extends React.Component {
     {
       route: "/courtfinder",
       title: "Court Finder",
-      component: stub
+      component: CourtFinder
     },
     {
       route: "/matchscheduler",
