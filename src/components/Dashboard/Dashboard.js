@@ -8,8 +8,6 @@ import UpcomingMatchesPanel from "./UpcomingMatchesPanel";
 import PageLayout from "../containers/PageLayout";
 import RecentMatches from "./RecentMatches";
 
-const { Content, Header, Footer } = Layout;
-
 class Dashboard extends React.Component {
   render() {
     return (
@@ -20,6 +18,8 @@ class Dashboard extends React.Component {
           </Col>
           <Col span={8}>
             <RecentMatches />
+          </Col>
+          <Col span={8}>
           </Col>
         </Row>
       </PageLayout>
