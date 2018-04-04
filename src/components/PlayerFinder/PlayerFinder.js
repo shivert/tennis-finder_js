@@ -1,99 +1,178 @@
 import React from "react";
 import PageLayout from "../containers/PageLayout";
 
-import { Row, Col, Layout, Table, Card, Input, Button } from "antd";
+import { Row, Col, Table, Card, Input, Button, Alert, Modal } from "antd";
+import { ajaxGet } from "../../utils/request";
 const SearchBar = Input.Search;
-
-const columns = [
-  {
-    title: "Name",
-    dataIndex: "name",
-    filters: [
-      {
-        text: "Joe",
-        value: "Joe"
-      },
-      {
-        text: "Jim",
-        value: "Jim"
-      },
-      {
-        text: "Submenu",
-        value: "Submenu",
-        children: [
-          {
-            text: "Green",
-            value: "Green"
-          },
-          {
-            text: "Black",
-            value: "Black"
-          }
-        ]
-      }
-    ],
-    // specify the condition of filtering result
-    // here is that finding the name started with `value`
-    onFilter: (value, record) => record.name.indexOf(value) === 0,
-    sorter: (a, b) => a.name.length - b.name.length
-  },
-  {
-    title: "Age",
-    dataIndex: "age",
-    defaultSortOrder: "descend",
-    sorter: (a, b) => a.age - b.age
-  },
-  {
-    title: "Address",
-    dataIndex: "address",
-    filters: [
-      {
-        text: "London",
-        value: "London"
-      },
-      {
-        text: "New York",
-        value: "New York"
-      }
-    ],
-    filterMultiple: false,
-    onFilter: (value, record) => record.address.indexOf(value) === 0,
-    sorter: (a, b) => a.address.length - b.address.length
-  }
-];
-
-const dataSource = [
-  {
-    key: "1",
-    name: "John Brown",
-    age: 32,
-    address: "New York No. 1 Lake Park"
-  },
-  {
-    key: "2",
-    name: "Jim Green",
-    age: 42,
-    address: "London No. 1 Lake Park"
-  },
-  {
-    key: "3",
-    name: "Joe Black",
-    age: 32,
-    address: "Sidney No. 1 Lake Park"
-  },
-  {
-    key: "4",
-    name: "Jim Red",
-    age: 32,
-    address: "London No. 2 Lake Park"
-  }
-];
+const { TextArea } = Input;
 
 export default class PlayerFinder extends React.Component {
+  state = {
+    hasError: false,
+    playerList: [],
+    filteredInfo: {},
+    selectedPlayer: { first_name: "" },
+    isModalVisible: false
+  };
+
+  onTableChange = (pagination, filters) => {
+    //console.log("Various parameters", pagination, filters, sorter);
+    this.setState({
+      filteredInfo: filters
+    });
+  };
+  clearFilters = () => {
+    this.setState({ filteredInfo: {} });
+  };
+
+  onPlayerSelect = selectedPlayer => {
+    this.setState({ selectedPlayer }, () => {
+      this.setState({ isModalVisible: true });
+    });
+  };
+
+  onModalCancel = () => {
+    this.setState({ isModalVisible: false });
+  };
+  onModalOk = () => {
+    this.setState({ isModalVisible: false });
+  };
+
+  componentDidMount() {
+    ajaxGet(
+      "https://rails-test-199116.appspot.com/players",
+      responseObject => {
+        if (responseObject.ok) {
+          const processedArray = responseObject.players.map(item => {
+            return { ...item, key: item.id };
+          });
+          this.setState({
+            playerList: processedArray,
+            hasError: false
+          });
+        } else {
+          this.setState({ hasError: true });
+        }
+      },
+      err => {
+        console.log(err);
+        this.setState({ hasError: true });
+      }
+    );
+  }
+
   render() {
+    const { filteredInfo } = this.state;
+    const columns = [
+      {
+        title: "First Name",
+        dataIndex: "first_name"
+      },
+      {
+        title: "Last Name",
+        dataIndex: "last_name"
+      },
+      {
+        title: "Age",
+        dataIndex: "age",
+        defaultSortOrder: "descend",
+        sorter: (a, b) => a.age - b.age
+      },
+      {
+        title: "Gender",
+        dataIndex: "gender",
+        filters: [
+          {
+            text: "Male",
+            value: "male"
+          },
+          {
+            text: "Female",
+            value: "female"
+          },
+          {
+            text: "Others",
+            value: "others"
+          }
+        ],
+        // specify the condition of filtering result
+        // here is that finding the name started with `value`
+        onFilter: (value, record) => record.gender === value,
+        filteredValue: filteredInfo.gender || null
+      },
+      {
+        title: "Skill Level (USTA)",
+        dataIndex: "skill",
+        filters: [
+          {
+            text: "1.0",
+            value: "1"
+          },
+          {
+            text: "1.5",
+            value: "1.5"
+          },
+          {
+            text: "2.0",
+            value: "2"
+          },
+          {
+            text: "2.5",
+            value: "2.5"
+          },
+          {
+            text: "3.0",
+            value: "3"
+          },
+          {
+            text: "3.5",
+            value: "3.5"
+          },
+          {
+            text: "4.0",
+            value: "4"
+          },
+          {
+            text: "4.5",
+            value: "4.5"
+          },
+          {
+            text: "5.0",
+            value: "5"
+          },
+          {
+            text: "5.0+",
+            value: "6"
+          }
+        ],
+        // specify the condition of filtering result
+        // here is that finding the name started with `value`
+        onFilter: (value, record) => record.skill === value,
+        filteredValue: filteredInfo.skill || null,
+        sorter: (a, b) => Number(a.skill) - Number(b.skill)
+      },
+      {
+        title: "Message",
+        key: "message",
+        render: (text, record) => (
+          <span>
+            <Button
+              onClick={() => {
+                this.onPlayerSelect(record);
+              }}
+            >
+              Message
+            </Button>
+          </span>
+        )
+      }
+    ];
     return (
       <PageLayout pageTitle="Player Finder">
         <Card>
+          {this.state.hasError && (
+            <Alert message="Failed to fetch players" type="error" />
+          )}
           <Row style={{ marginBottom: "20px" }} gutter={16}>
             <Col span={4}>
               <SearchBar placeholder="Search by name" />
@@ -101,22 +180,26 @@ export default class PlayerFinder extends React.Component {
             <Col span={3}>
               <Button onClick={this.clearFilters}>Clear filters</Button>
             </Col>
-            <Col span={4}>
-              <Button onClick={this.clearAll}>Clear filters and sorters</Button>
-            </Col>
           </Row>
           <Row>
             <Col span={24}>
               <Table
                 columns={columns}
-                dataSource={dataSource}
-                expandedRowRender={record => (
-                  <p style={{ margin: 0 }}>{"this is expanded"}</p>
-                )}
+                dataSource={this.state.playerList}
+                onChange={this.onTableChange}
               />
             </Col>
           </Row>
         </Card>
+        <Modal
+          title={<h3>Message {this.state.selectedPlayer.first_name}</h3>}
+          visible={this.state.isModalVisible}
+          onOk={this.onModalOk}
+          onCancel={this.onModalCancel}
+        >
+          <h4>Write your message here:</h4>
+          <TextArea rows={4} />
+        </Modal>
       </PageLayout>
     );
   }
