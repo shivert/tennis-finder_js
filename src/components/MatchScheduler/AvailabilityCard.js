@@ -28,7 +28,7 @@ export const AvailabilityCard = props => {
       {(shouldDisplayEmptyMessage && emptyAvailabilityMessage) || (
         <List
           itemLayout="horizontal"
-          dataSource={data}
+          dataSource={props.availabilities}
           renderItem={item => (
             <List.Item>
               <List.Item.Meta

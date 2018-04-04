@@ -14,85 +14,19 @@ import {
   List
 } from "antd";
 import { AvailabilityCard } from "./AvailabilityCard";
-import { ajaxGet } from "../../utils/request";
+import { ajaxGet, ajaxPost } from "../../utils/request";
 import EditAvailabilityForm from "./EditAvailabilityForm";
 const SearchBar = Input.Search;
 const { RangePicker } = DatePicker;
-
-const columns = [
-  {
-    title: "Name",
-    dataIndex: "name",
-    filters: [
-      {
-        text: "Joe",
-        value: "Joe"
-      },
-      {
-        text: "Jim",
-        value: "Jim"
-      },
-      {
-        text: "Submenu",
-        value: "Submenu",
-        children: [
-          {
-            text: "Green",
-            value: "Green"
-          },
-          {
-            text: "Black",
-            value: "Black"
-          }
-        ]
-      }
-    ],
-    // specify the condition of filtering result
-    // here is that finding the name started with `value`
-    onFilter: (value, record) => record.name.indexOf(value) === 0,
-    sorter: (a, b) => a.name.length - b.name.length
-  },
-  {
-    title: "Age",
-    dataIndex: "age",
-    defaultSortOrder: "descend",
-    sorter: (a, b) => a.age - b.age
-  },
-  {
-    title: "Address",
-    dataIndex: "address",
-    filters: [
-      {
-        text: "London",
-        value: "London"
-      },
-      {
-        text: "New York",
-        value: "New York"
-      }
-    ],
-    filterMultiple: false,
-    onFilter: (value, record) => record.address.indexOf(value) === 0,
-    sorter: (a, b) => a.address.length - b.address.length
-  }
-];
-
-const dataSource = [
-  {
-    start_time: "2018-04-04T04:40:48.276Z",
-    end_time: "2018-04-04T05:40:48.276Z"
-  },
-  {
-    start_time: "2018-03-04T04:40:48.276Z",
-    end_time: "2018-03-04T05:40:48.276Z"
-  }
-];
 
 export default class MatchScheduler extends React.Component {
   state = {
     filteredInfo: {},
     userAvailabilities: [],
+    availableMatches: [],
     isEditingAvailability: false,
+    shouldShowRequestConfirmation: false,
+    requestedMatch: {},
     hasError: false
   };
 
@@ -108,6 +42,7 @@ export default class MatchScheduler extends React.Component {
 
   componentDidMount() {
     this.getUserAvailability();
+    this.getAvailableMatches();
   }
 
   getUserAvailability = () => {
@@ -139,6 +74,31 @@ export default class MatchScheduler extends React.Component {
     );
   };
 
+  getAvailableMatches = () => {
+    ajaxGet(
+      "https://rails-test-199116.appspot.com/similar-availability",
+      responseObject => {
+        if (responseObject.ok) {
+          const flattenedArray = responseObject.matches.reduce(
+            (acc, val) => acc.concat(val),
+            []
+          );
+          this.setState({
+            availableMatches: flattenedArray,
+            hasError: false
+          });
+          console.log(flattenedArray);
+        } else {
+          this.setState({ hasError: true });
+        }
+      },
+      err => {
+        console.log(err);
+        this.setState({ hasError: true });
+      }
+    );
+  };
+
   onEdit = () => {
     this.setState({ isEditingAvailability: true });
   };
@@ -147,8 +107,61 @@ export default class MatchScheduler extends React.Component {
     this.setState({ isEditingAvailability: false });
   };
 
+  onMatchRequest = record => {
+    this.setState({
+      requestedMatch: record,
+      shouldShowRequestConfirmation: true
+    });
+  };
+
+  onRequestSubmit = () => {
+    ajaxPost(
+      "https://rails-test-199116.appspot.com/matches",
+      {
+        player_2_id: 3,
+        status: "REQUESTED",
+        start_time: this.state.requestedMatch.start_time,
+        end_time: this.state.requestedMatch.end_time
+      },
+      responseObject => {
+        if (responseObject.ok) {
+          this.onMatchRequestCancel();
+        } else {
+          this.onMatchRequestCancel();
+        }
+      },
+      err => {
+        console.log(err);
+      }
+    );
+  };
+
+  onMatchRequestCancel = () => {
+    this.setState({ shouldShowRequestConfirmation: false });
+  };
+
   onFormSubmit = formData => {
-    console.log(formData);
+    const timeSlotList = formData.names;
+    const stringifiedAvailability = timeSlotList.map(slot => {
+      return {
+        start_time: slot[0].toISOString(),
+        end_time: slot[1].toISOString()
+      };
+    });
+    ajaxPost(
+      "https://rails-test-199116.appspot.com/availability",
+      { availability: stringifiedAvailability },
+      responseObject => {
+        if (responseObject.ok) {
+          this.onModalCancel();
+          this.getUserAvailability();
+        } else {
+        }
+      },
+      err => {
+        console.log(err);
+      }
+    );
   };
 
   render() {
@@ -156,59 +169,49 @@ export default class MatchScheduler extends React.Component {
     const columns = [
       {
         title: "Name",
-        dataIndex: "name",
-        filters: [
-          {
-            text: "Joe",
-            value: "Joe"
-          },
-          {
-            text: "Jim",
-            value: "Jim"
-          },
-          {
-            text: "Submenu",
-            value: "Submenu",
-            children: [
-              {
-                text: "Green",
-                value: "Green"
-              },
-              {
-                text: "Black",
-                value: "Black"
-              }
-            ]
-          }
-        ],
-        // specify the condition of filtering result
-        // here is that finding the name started with `value`
-        onFilter: (value, record) => record.name.indexOf(value) === 0,
-        //filteredValue: filteredInfo.gender || null,
-        sorter: (a, b) => a.name.length - b.name.length
+        dataIndex: "user.name"
       },
       {
         title: "Age",
-        dataIndex: "age",
+        dataIndex: "user.age",
         defaultSortOrder: "descend",
         sorter: (a, b) => a.age - b.age
       },
       {
-        title: "Address",
-        dataIndex: "address",
-        filters: [
-          {
-            text: "London",
-            value: "London"
-          },
-          {
-            text: "New York",
-            value: "New York"
-          }
-        ],
-        filterMultiple: false,
-        onFilter: (value, record) => record.address.indexOf(value) === 0,
-        sorter: (a, b) => a.address.length - b.address.length
+        title: "Skill",
+        dataIndex: "user.skill",
+        defaultSortOrder: "descend",
+        sorter: (a, b) => a.skill - b.skill
+      },
+      {
+        title: "Start Time",
+        render: (text, record) => {
+          return (
+            <div>
+              <div>{`${moment(record.start_time).format(
+                "dddd, MMMM Do YYYY, h:mm a"
+              )}`}</div>
+              <div>{`To ${moment(record.end_time).format(
+                "dddd, MMMM Do YYYY, h:mm a"
+              )}`}</div>
+            </div>
+          );
+        }
+      },
+      {
+        title: "Request Match",
+        key: "request",
+        render: (text, record) => (
+          <span>
+            <Button
+              onClick={() => {
+                this.onMatchRequest(record);
+              }}
+            >
+              Request Match
+            </Button>
+          </span>
+        )
       }
     ];
 
@@ -241,8 +244,10 @@ export default class MatchScheduler extends React.Component {
               </Row>
               <Row>
                 <Col span={24}>
-                  this should include time and place
-                  <Table columns={columns} dataSource={dataSource} />
+                  <Table
+                    columns={columns}
+                    dataSource={this.state.availableMatches}
+                  />
                 </Col>
               </Row>
             </Card>
@@ -255,6 +260,14 @@ export default class MatchScheduler extends React.Component {
           onCancel={this.onModalCancel}
         >
           <EditAvailabilityForm onFormSubmit={this.onFormSubmit} />
+        </Modal>
+        <Modal
+          title={<h3>Comfirmation</h3>}
+          visible={this.state.shouldShowRequestConfirmation}
+          onOk={this.onRequestSubmit}
+          onCancel={this.onMatchRequestCancel}
+        >
+          Are you sure you want to request this match?
         </Modal>
       </PageLayout>
     );
