@@ -7,6 +7,7 @@ import * as actions from "../../actions/dashboardActions";
 import UpcomingMatchesPanel from "./UpcomingMatchesPanel";
 import PageLayout from "../containers/PageLayout";
 import RecentMatches from "./RecentMatches";
+import Weather from "./Weather";
 
 class Dashboard extends React.Component {
   render() {
@@ -20,6 +21,7 @@ class Dashboard extends React.Component {
             <RecentMatches />
           </Col>
           <Col span={8}>
+            <Weather />
           </Col>
         </Row>
       </PageLayout>

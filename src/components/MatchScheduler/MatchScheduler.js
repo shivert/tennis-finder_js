@@ -169,7 +169,12 @@ export default class MatchScheduler extends React.Component {
     const columns = [
       {
         title: "Name",
-        dataIndex: "user.name"
+        render: (text, record) => {
+          console.log(record);
+          return `${record.user_profile.first_name} ${
+            record.user_profile.last_name
+          }`;
+        }
       },
       {
         title: "Age",
