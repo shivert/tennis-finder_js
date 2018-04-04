@@ -25,7 +25,7 @@ class Registration extends React.Component {
       if (err) {
         return;
       }
-      const birt_year = values.birth_date.format("YYYY");
+      const birth_year = values.birth_date.format("YYYY");
       const formData = { ...values, birth_year };
       ajaxPost("https://rails-test-199116.appspot.com/signup", formData)
         .then(responseObject => {
