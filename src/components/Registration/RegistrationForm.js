@@ -13,7 +13,6 @@ import {
   Button
 } from "antd";
 import { ajaxGet, ajaxPost } from "../../utils/request";
-import { Redirect } from "react-router-dom";
 
 const FormItem = Form.Item;
 const Option = Select.Option;
@@ -29,10 +28,15 @@ class Registration extends React.Component {
       const formData = { ...values, birth_year };
       ajaxPost("https://rails-test-199116.appspot.com/signup", formData)
         .then(responseObject => {
-          console.log(responseObject);
+          if (responseObject.status === 200) {
+            document.cookie = responseObject.auth_token;
+            this.props.onRegistrationComplete();
+          } else {
+            this.props.onRegistrationError();
+          }
         })
         .catch(err => {
-          console.log("error: ", err);
+          this.props.onRegistrationError();
         });
     });
   };

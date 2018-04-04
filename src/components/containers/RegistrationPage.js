@@ -8,6 +8,10 @@ import RegistrationForm from "../Registration/RegistrationForm";
 
 const { Header, Content } = Layout;
 class RegistrationPage extends React.Component {
+  state = { isRegistrationComplete: false };
+  onReigistrationComplete = () => {
+    this.setState({ isRegistrationComplete: true });
+  };
   render() {
     return (
       <div>
@@ -22,7 +26,9 @@ class RegistrationPage extends React.Component {
             <Row type="flex" justify="center">
               <Col span={12}>
                 <Card title="Register">
-                  <RegistrationForm />
+                  <RegistrationForm
+                    onReigistrationComplete={this.onReigistrationComplete}
+                  />
                 </Card>
               </Col>
             </Row>
