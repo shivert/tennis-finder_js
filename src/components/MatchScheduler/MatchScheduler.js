@@ -16,6 +16,7 @@ import {
 import { AvailabilityCard } from "./AvailabilityCard";
 import { ajaxGet, ajaxPost } from "../../utils/request";
 import EditAvailabilityForm from "./EditAvailabilityForm";
+import UpcomingMatchesPanel from "../Dashboard/UpcomingMatchesPanel";
 const SearchBar = Input.Search;
 const { RangePicker } = DatePicker;
 
@@ -118,7 +119,7 @@ export default class MatchScheduler extends React.Component {
     ajaxPost(
       "https://rails-test-199116.appspot.com/matches",
       {
-        player_2_id: 3,
+        player_2_id: this.state.requestedMatch.user_profile.user_id,
         status: "REQUESTED",
         start_time: this.state.requestedMatch.start_time,
         end_time: this.state.requestedMatch.end_time
@@ -171,9 +172,12 @@ export default class MatchScheduler extends React.Component {
         title: "Name",
         render: (text, record) => {
           console.log(record);
-          return `${record.user_profile.first_name} ${
-            record.user_profile.last_name
-          }`;
+          if (record.user_profile) {
+            return `${record.user_profile.first_name} ${
+              record.user_profile.last_name
+            }`;
+          }
+          return "";
         }
       },
       {
@@ -224,7 +228,7 @@ export default class MatchScheduler extends React.Component {
       <PageLayout pageTitle="Match Scheduler">
         <Row gutter={16}>
           <Col span={8}>
-            <Card title="Scheduled Matches">here</Card>
+            <UpcomingMatchesPanel />
           </Col>
           <Col span={16}>
             <AvailabilityCard

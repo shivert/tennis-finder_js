@@ -164,7 +164,7 @@ class Registration extends React.Component {
           })(<Input type="password" onBlur={this.handleConfirmBlur} />)}
         </FormItem>
         <FormItem {...formItemLayout} label="Phone Number">
-          {getFieldDecorator("phone", {
+          {getFieldDecorator("phone_number", {
             rules: [
               { required: true, message: "Please input your phone number!" }
             ]

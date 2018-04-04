@@ -1,0 +1,13 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`<LoginPage /> renders correctly 1`] = `
+<button
+  className="ant-btn login-form-button ant-btn-primary"
+  onClick={[Function]}
+  type="submit"
+>
+  <span>
+    Login
+  </span>
+</button>
+`;

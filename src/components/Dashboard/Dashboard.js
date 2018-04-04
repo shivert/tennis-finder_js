@@ -6,7 +6,6 @@ import { bindActionCreators } from "redux";
 import * as actions from "../../actions/dashboardActions";
 import UpcomingMatchesPanel from "./UpcomingMatchesPanel";
 import PageLayout from "../containers/PageLayout";
-import RecentMatches from "./RecentMatches";
 import Weather from "./Weather";
 
 class Dashboard extends React.Component {
@@ -14,13 +13,10 @@ class Dashboard extends React.Component {
     return (
       <PageLayout pageTitle="Your Dashboard">
         <Row gutter={32}>
-          <Col span={8}>
+          <Col span={12}>
             <UpcomingMatchesPanel />
           </Col>
-          <Col span={8}>
-            <RecentMatches />
-          </Col>
-          <Col span={8}>
+          <Col span={12}>
             <Weather />
           </Col>
         </Row>

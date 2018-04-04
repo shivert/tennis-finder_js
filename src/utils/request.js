@@ -48,3 +48,30 @@ export function ajaxPost(url, body, callback, errorCallback) {
     .then(callback)
     .catch(errorCallback);
 }
+
+export function ajaxPut(url, body, callback, errorCallback) {
+  const header = new Headers();
+  header.append("Content-Type", "application/json");
+  header.append("Authorization", document.cookie);
+  const message = {
+    method: "PUT",
+    headers: header,
+    body: JSON.stringify(body)
+  };
+
+  const ajaxRequest = new Request(url, message);
+  fetch(ajaxRequest)
+    .then(resp => {
+      const status = resp.status;
+      return resp
+        .json()
+        .then(object => {
+          return { ...object, status: status, ok: resp.ok };
+        })
+        .catch(err => {
+          throw err;
+        });
+    })
+    .then(callback)
+    .catch(errorCallback);
+}
