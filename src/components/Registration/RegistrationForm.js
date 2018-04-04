@@ -143,7 +143,7 @@ class Registration extends React.Component {
           })(<Input type="password" />)}
         </FormItem>
         <FormItem {...formItemLayout} label="Confirm Password">
-          {getFieldDecorator("confirm", {
+          {getFieldDecorator("password_confirmation", {
             rules: [
               {
                 required: true,
