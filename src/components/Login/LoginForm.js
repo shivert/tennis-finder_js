@@ -14,8 +14,10 @@ class Login extends React.Component {
         return;
       }
       console.log(values);
-      ajaxPost("https://rails-test-199116.appspot.com/auth/login", values)
-        .then(responseObject => {
+      ajaxPost(
+        "https://rails-test-199116.appspot.com/auth/login",
+        values,
+        responseObject => {
           if (responseObject.status === 200) {
             document.cookie = responseObject.auth_token;
             this.setState({
@@ -24,11 +26,12 @@ class Login extends React.Component {
             });
           }
           this.setState({ hasAuthenticationError: true });
-        })
-        .catch(err => {
+        },
+        err => {
           this.setState({ hasAuthenticationError: true });
           console.log("error: ", err);
-        });
+        }
+      );
     });
   };
   render() {
