@@ -26,18 +26,22 @@ class Registration extends React.Component {
       }
       const birth_year = values.birth_date.format("YYYY");
       const formData = { ...values, birth_year };
-      ajaxPost("https://rails-test-199116.appspot.com/signup", formData)
-        .then(responseObject => {
-          if (responseObject.status === 200) {
+      ajaxPost(
+        "https://rails-test-199116.appspot.com/signup",
+        formData,
+        responseObject => {
+          if (responseObject.ok) {
             document.cookie = responseObject.auth_token;
             this.props.onRegistrationComplete();
           } else {
             this.props.onRegistrationError();
           }
-        })
-        .catch(err => {
+        },
+        err => {
+          console.log(err);
           this.props.onRegistrationError();
-        });
+        }
+      );
     });
   };
 

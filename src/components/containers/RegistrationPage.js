@@ -2,17 +2,37 @@ import React from "react";
 import PropTypes from "prop-types";
 import { connect } from "react-redux";
 import { bindActionCreators } from "redux";
-import { Row, Col, Layout, Card } from "antd";
+import { Row, Col, Layout, Card, Alert } from "antd";
+import { Redirect } from "react-router-dom";
+
 import * as actions from "../../actions/registrationActions";
 import RegistrationForm from "../Registration/RegistrationForm";
 
 const { Header, Content } = Layout;
 class RegistrationPage extends React.Component {
-  state = { isRegistrationComplete: false };
-  onReigistrationComplete = () => {
-    this.setState({ isRegistrationComplete: true });
+  state = { isRegistrationComplete: false, hasRegistrationError: false };
+
+  onRegistrationComplete = () => {
+    this.setState({
+      isRegistrationComplete: true,
+      hasRegistrationError: false
+    });
   };
+
+  onRegistrationError = () => {
+    this.setState({ hasRegistrationError: true });
+  };
+
   render() {
+    if (this.state.isRegistrationComplete) {
+      return (
+        <Redirect
+          to={{
+            pathname: "/dashboard"
+          }}
+        />
+      );
+    }
     return (
       <div>
         <Layout style={{ minHeight: "100vh" }}>
@@ -25,9 +45,17 @@ class RegistrationPage extends React.Component {
             </Row>
             <Row type="flex" justify="center">
               <Col span={12}>
-                <Card title="Register">
+                <Card>
+                  {this.state.hasRegistrationError && (
+                    <Alert
+                      message="  There was an error when completing the registration.
+                      Please try again later"
+                      type="error"
+                    />
+                  )}
                   <RegistrationForm
-                    onReigistrationComplete={this.onReigistrationComplete}
+                    onRegistrationComplete={this.onRegistrationComplete}
+                    onRegistrationError={this.onRegistrationError}
                   />
                 </Card>
               </Col>
