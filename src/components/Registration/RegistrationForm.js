@@ -13,6 +13,7 @@ import {
   Button
 } from "antd";
 import { ajaxGet, ajaxPost } from "../../utils/request";
+import { Redirect } from "react-router-dom";
 
 const FormItem = Form.Item;
 const Option = Select.Option;
@@ -24,8 +25,8 @@ class Registration extends React.Component {
       if (err) {
         return;
       }
-      const birthYear = values.birthDate.format("YYYY");
-      const formData = { ...values, birthYear };
+      const birt_year = values.birth_date.format("YYYY");
+      const formData = { ...values, birth_year };
       ajaxPost("https://rails-test-199116.appspot.com/signup", formData)
         .then(responseObject => {
           console.log(responseObject);
@@ -72,7 +73,7 @@ class Registration extends React.Component {
     return (
       <Form onSubmit={this.handleSubmit}>
         <FormItem {...formItemLayout} label="First Name">
-          {getFieldDecorator("firstName", {
+          {getFieldDecorator("first_name", {
             rules: [
               {
                 required: true,
@@ -83,7 +84,7 @@ class Registration extends React.Component {
           })(<Input />)}
         </FormItem>
         <FormItem {...formItemLayout} label="Last Name">
-          {getFieldDecorator("lastName", {
+          {getFieldDecorator("last_name", {
             rules: [
               {
                 required: true,
@@ -104,7 +105,7 @@ class Registration extends React.Component {
             </span>
           }
         >
-          {getFieldDecorator("userName", {
+          {getFieldDecorator("user_name", {
             rules: [
               {
                 required: true,
@@ -199,7 +200,7 @@ class Registration extends React.Component {
           )}
         </FormItem>
         <FormItem {...formItemLayout} label="Birth Date">
-          {getFieldDecorator("birthDate", {
+          {getFieldDecorator("birth_date", {
             rules: [
               {
                 type: "object",
@@ -210,11 +211,11 @@ class Registration extends React.Component {
           })(<DatePicker />)}
         </FormItem>
         <FormItem {...formItemLayout} label="Home Court">
-          {getFieldDecorator("homeCourt")(<Input style={{ width: "100%" }} />)}
+          {getFieldDecorator("home_court")(<Input style={{ width: "100%" }} />)}
         </FormItem>
         <FormItem {...tailFormItemLayout}>
           {getFieldDecorator("agreement", {
-            valuePropName: "checkedAgreement",
+            valuePropName: "checked_agreement",
             rules: [
               {
                 required: true,
