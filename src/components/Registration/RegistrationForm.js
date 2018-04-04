@@ -5,34 +5,39 @@ import {
   Tooltip,
   Icon,
   Cascader,
+  DatePicker,
   Select,
   Row,
   Col,
   Checkbox,
-  Button,
-  AutoComplete
+  Button
 } from "antd";
+import { ajaxGet, ajaxPost } from "../../utils/request";
+
 const FormItem = Form.Item;
 const Option = Select.Option;
-const AutoCompleteOption = AutoComplete.Option;
 
 class Registration extends React.Component {
-  state = {};
   handleSubmit = e => {
     e.preventDefault();
-    this.props.form.validateFieldsAndScroll((err, values) => {
-      if (!err) {
-        console.log("Received values of form: ", values);
+    this.props.form.validateFields((err, values) => {
+      if (err) {
+        return;
       }
+      const birthYear = values.birthDate.format("YYYY");
+      const formData = { ...values, birthYear };
+      ajaxPost("https://rails-test-199116.appspot.com/signup", formData)
+        .then(responseObject => {
+          console.log(responseObject);
+        })
+        .catch(err => {
+          console.log("error: ", err);
+        });
     });
   };
-  handleConfirmBlur = e => {};
-  compareToFirstPassword = (rule, value, callback) => {};
-  validateToNextPassword = (rule, value, callback) => {};
-  handleWebsiteChange = value => {};
+
   render() {
     const { getFieldDecorator } = this.props.form;
-    const { autoCompleteResult } = this.state;
 
     const formItemLayout = {
       labelCol: {
@@ -56,7 +61,7 @@ class Registration extends React.Component {
         }
       }
     };
-    const prefixSelector = getFieldDecorator("prefix", {
+    const prefixSelector = getFieldDecorator("country", {
       initialValue: "1"
     })(
       <Select style={{ width: 70 }}>
@@ -64,12 +69,51 @@ class Registration extends React.Component {
       </Select>
     );
 
-    // const websiteOptions = autoCompleteResult.map(website => (
-    //   <AutoCompleteOption key={website}>{website}</AutoCompleteOption>
-    // ));
-
     return (
       <Form onSubmit={this.handleSubmit}>
+        <FormItem {...formItemLayout} label="First Name">
+          {getFieldDecorator("firstName", {
+            rules: [
+              {
+                required: true,
+                message: "Please input your first name!",
+                whitespace: true
+              }
+            ]
+          })(<Input />)}
+        </FormItem>
+        <FormItem {...formItemLayout} label="Last Name">
+          {getFieldDecorator("lastName", {
+            rules: [
+              {
+                required: true,
+                message: "Please input your last name!",
+                whitespace: true
+              }
+            ]
+          })(<Input />)}
+        </FormItem>
+        <FormItem
+          {...formItemLayout}
+          label={
+            <span>
+              User Name&nbsp;
+              <Tooltip title="What do you want others to call you?">
+                <Icon type="question-circle-o" />
+              </Tooltip>
+            </span>
+          }
+        >
+          {getFieldDecorator("userName", {
+            rules: [
+              {
+                required: true,
+                message: "Please input your preferred user name!",
+                whitespace: true
+              }
+            ]
+          })(<Input />)}
+        </FormItem>
         <FormItem {...formItemLayout} label="E-mail">
           {getFieldDecorator("email", {
             rules: [
@@ -110,27 +154,6 @@ class Registration extends React.Component {
             ]
           })(<Input type="password" onBlur={this.handleConfirmBlur} />)}
         </FormItem>
-        <FormItem
-          {...formItemLayout}
-          label={
-            <span>
-              Nickname&nbsp;
-              <Tooltip title="What do you want others to call you?">
-                <Icon type="question-circle-o" />
-              </Tooltip>
-            </span>
-          }
-        >
-          {getFieldDecorator("nickname", {
-            rules: [
-              {
-                required: true,
-                message: "Please input your nickname!",
-                whitespace: true
-              }
-            ]
-          })(<Input />)}
-        </FormItem>
         <FormItem {...formItemLayout} label="Phone Number">
           {getFieldDecorator("phone", {
             rules: [
@@ -138,43 +161,66 @@ class Registration extends React.Component {
             ]
           })(<Input addonBefore={prefixSelector} style={{ width: "100%" }} />)}
         </FormItem>
-        {/* <FormItem {...formItemLayout} label="Website">
-          {getFieldDecorator("website", {
-            rules: [{ required: true, message: "Please input website!" }]
+        <FormItem {...formItemLayout} label="Zip Code">
+          {getFieldDecorator("zip")(<Input style={{ width: "100%" }} />)}
+        </FormItem>
+        <FormItem {...formItemLayout} label="Location">
+          {getFieldDecorator("location")(<Input style={{ width: "100%" }} />)}
+        </FormItem>
+        <FormItem {...formItemLayout} label="Skill Level">
+          {getFieldDecorator("skill", {
+            rules: [
+              { required: true, message: "Please input your skill level" }
+            ]
           })(
-            <AutoComplete
-              dataSource={websiteOptions}
-              onChange={this.handleWebsiteChange}
-              placeholder="website"
-            >
-              <Input />
-            </AutoComplete>
+            <Select style={{ width: "100%" }}>
+              <Option value="1">USDA 1</Option>
+              <Option value="1.5">USDA 1.5</Option>
+              <Option value="2">USDA 2</Option>
+              <Option value="2.5">USDA 2.5</Option>
+              <Option value="3">USDA 3</Option>
+              <Option value="3.5">USDA 3.5</Option>
+              <Option value="4">USDA 4</Option>
+              <Option value="4.5">USDA 4.5</Option>
+              <Option value="5">USDA 5</Option>
+              <Option value="6">USDA 5 and up</Option>
+            </Select>
           )}
-        </FormItem> */}
-        {/* <FormItem
-          {...formItemLayout}
-          label="Captcha"
-          extra="We must make sure that your are a human."
-        >
-          <Row gutter={8}>
-            <Col span={12}>
-              {getFieldDecorator("captcha", {
-                rules: [
-                  {
-                    required: true,
-                    message: "Please input the captcha you got!"
-                  }
-                ]
-              })(<Input />)}
-            </Col>
-            <Col span={12}>
-              <Button>Get captcha</Button>
-            </Col>
-          </Row>
-        </FormItem> */}
+        </FormItem>
+        <FormItem {...formItemLayout} label="Gender">
+          {getFieldDecorator("gender", {
+            rules: [{ required: true, message: "Please input your gender" }]
+          })(
+            <Select style={{ width: "100%" }}>
+              <Option value="male">Male</Option>
+              <Option value="female">Female</Option>
+              <Option value="other">Others</Option>
+            </Select>
+          )}
+        </FormItem>
+        <FormItem {...formItemLayout} label="Birth Date">
+          {getFieldDecorator("birthDate", {
+            rules: [
+              {
+                type: "object",
+                required: true,
+                message: "Please select your birth date!"
+              }
+            ]
+          })(<DatePicker />)}
+        </FormItem>
+        <FormItem {...formItemLayout} label="Home Court">
+          {getFieldDecorator("homeCourt")(<Input style={{ width: "100%" }} />)}
+        </FormItem>
         <FormItem {...tailFormItemLayout}>
           {getFieldDecorator("agreement", {
-            valuePropName: "checked"
+            valuePropName: "checkedAgreement",
+            rules: [
+              {
+                required: true,
+                message: "Please agree to agreement!"
+              }
+            ]
           })(
             <Checkbox>
               I have read the <a href="">agreement</a>
